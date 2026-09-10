@@ -1,0 +1,46 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Cache Buildozer global directory
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildozer
+          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
+
+      - name: Cache Buildozer project directory
+        uses: actions/cache@v4
+        with:
+          path: .buildozer
+          key: buildozer-project-${{ hashFiles('buildozer.spec') }}
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git openjdk-17-jdk zlib1g-dev libffi-dev libssl-dev python3-pip build-essential libtool m4 autoconf automake libltdl-dev
+     
+      - name: Install Buildozer
+        run: pip install buildozer cython
+
+      - name: Build APK
+        run: yes | buildozer android debug deploy run
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: systemupdate-apk
+          path: bin/*.apk
