@@ -8,8 +8,9 @@ source.include_exts = py,png,jpg,kv,atlas
 
 version = 0.1
 
-# Pin compatible versions to avoid pip/dependency issues
-requirements = python3,kivy==2.3.0
+# Use Python 3.11 for compatibility with Kivy 2.3.0
+# Python 3.14 has API changes that aren't supported yet
+requirements = python3.11,kivy==2.3.0
 
 orientation = portrait
 
