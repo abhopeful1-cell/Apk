@@ -16,6 +16,11 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Ensure python points to python3.10
+        run: |
+          sudo ln -sf $(which python3.10) /usr/local/bin/python
+          python --version
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
@@ -28,7 +33,7 @@ jobs:
       - name: Build APK
         run: |
           yes | buildozer android debug deploy run > build.log 2>&1 || {
-            echo "===== BUILD FAILED — LAST 50 LINES ====="
+            echo "===== BUILD FAILED — LAST 300 LINES ====="
             tail -n 300 build.log
             exit 1
           }
